@@ -1,0 +1,13 @@
+﻿  ToolBox.cpp
+f:\meta-structure learning\meta-structure\hin (版本 九 增加meta-structure长度限制，修改输出形式)\hin\toolbox.cpp(8): warning C4101: “rtype”: 未引用的局部变量
+f:\meta-structure learning\meta-structure\hin (版本 九 增加meta-structure长度限制，修改输出形式)\hin\toolbox.cpp(68): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+f:\meta-structure learning\meta-structure\hin (版本 九 增加meta-structure长度限制，修改输出形式)\hin\toolbox.cpp(88): warning C4244: “return”: 从“double”转换到“float”，可能丢失数据
+  stdafx.cpp
+  PreProcess.cpp
+  HIN_Main.cpp
+  DiscoveringMetaStructure.cpp
+f:\meta-structure learning\meta-structure\hin (版本 九 增加meta-structure长度限制，修改输出形式)\hin\discoveringmetastructure.cpp(246): warning C4018: “<”: 有符号/无符号不匹配
+  正在生成代码...
+f:\meta-structure learning\meta-structure\hin (版本 九 增加meta-structure长度限制，修改输出形式)\hin\toolbox.cpp(28): warning C4715: “findLinkType”: 不是所有的控件路径都返回值
+  HIN.vcxproj -> F:\Meta-structure Learning\Meta-Structure\HIN (版本 九 增加Meta-Structure长度限制，修改输出形式)\Debug\HIN.exe
+  HIN.vcxproj -> F:\Meta-structure Learning\Meta-Structure\HIN (版本 九 增加Meta-Structure长度限制，修改输出形式)\Debug\HIN.pdb (Full PDB)

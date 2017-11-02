@@ -1,0 +1,16 @@
+﻿  DiscoveringMetaStructure.cpp
+f:\meta-structure learning\meta-structure\enumerate meta-structure history\hin\hin\DiscoveringMetaStructure.h(48): error C2059: 语法错误:“{”
+f:\meta-structure learning\meta-structure\enumerate meta-structure history\hin\hin\DiscoveringMetaStructure.h(48): error C2334: “{”的前面有意外标记；跳过明显的函数体
+DiscoveringMetaStructure.cpp(288): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  HIN_Main.cpp
+f:\meta-structure learning\meta-structure\enumerate meta-structure history\hin\hin\DiscoveringMetaStructure.h(48): error C2059: 语法错误:“{”
+f:\meta-structure learning\meta-structure\enumerate meta-structure history\hin\hin\DiscoveringMetaStructure.h(48): error C2334: “{”的前面有意外标记；跳过明显的函数体
+  PreProcess.cpp
+f:\meta-structure learning\meta-structure\enumerate meta-structure history\hin\hin\DiscoveringMetaStructure.h(48): error C2059: 语法错误:“{”
+f:\meta-structure learning\meta-structure\enumerate meta-structure history\hin\hin\DiscoveringMetaStructure.h(48): error C2334: “{”的前面有意外标记；跳过明显的函数体
+  stdafx.cpp
+  ToolBox.cpp
+f:\meta-structure learning\meta-structure\enumerate meta-structure history\hin\hin\DiscoveringMetaStructure.h(48): error C2059: 语法错误:“{”
+f:\meta-structure learning\meta-structure\enumerate meta-structure history\hin\hin\DiscoveringMetaStructure.h(48): error C2334: “{”的前面有意外标记；跳过明显的函数体
+ToolBox.cpp(68): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+ToolBox.cpp(88): warning C4244: “return”: 从“double”转换到“float”，可能丢失数据
