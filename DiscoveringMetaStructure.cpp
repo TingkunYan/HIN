@@ -290,12 +290,88 @@ void generateMetaStructure(list<vecNode*> &que,vector<vecNode*> listBranchNode, 
 	buildMetaStructureBranch(que, vecNodeType, set_intersection, vecNodeType.size(), mapPathCode, mapStructureCode,myResidaul, currenttype, nBranchNum, nHop);
 }
 
-
-int dijTopkMultiCountM(AdjList *dataAdj, list<vecNode *>&que, myVector &myResidual,unordered_set<int> dstVec,LongHashSet TruthHash, LinkTypeNode *&mapPathCode, LinkTypeNode *&mapStructureCode, vector<myVector> &myAdd,int &iterTime, int eachMetaStrucNum, int nMaxHopNum)
+bool compareVecNode(vecNode* first, vecNode* second)
 {
+	return (first->priorityScore) > (second->priorityScore);
+	//return (first->g*1.0f ) > (second->g*1.0f);
+}
+
+void updateQueRank(list<vecNode *>&que, myVector &myResidual)
+{
+	list<vecNode*>::iterator iter;
+	for (iter = que.begin(); iter != que.end(); iter++)
+	{
+		float res = 0;
+		float secres = 0;
+		int count = 0;
+		for (int i = 0; i < TRAINNUM; i++)  //注意这里设定的分子只取样本的一半
+		{
+			if (i < TRAINNUM / 2)
+			{
+				res += (*iter)->correct[i] * myResidual(i);
+			}
+			secres += pow((*iter)->correct[i], 2);
+		}
+		(*iter)->priorityScore = res / secres;
+	}
+	que.sort(compareVecNode);
+}
+
+float checkExist(hash_map<int, myVector> tempStore, myVector &myResidual, int &type, myVector &res)
+{
+	hash_map<int, myVector>::const_iterator iter;
+	float maxscore = -1;
+	int maxtype;
+	for (iter = tempStore.begin(); iter != tempStore.end(); iter++)
+	{
+		float score = 0;
+		float base = 0;
+		int count = 0;
+		for (int i = 0; i < TRAINNUM; i++)
+		{
+			score += myResidual(i)*iter->second(i);
+			base += pow(iter->second(i), 2);
+			if (iter->second(i) >0)
+				count++;
+		}
+		score = score / sqrt(base);
+		if (score > maxscore)
+		{
+			maxscore = score;
+			maxtype = iter->first;
+		}
+	}
+	if (maxscore > 0.0000001f)
+	{
+		type = maxtype;
+		res = tempStore[type];
+	}
+	return maxscore;
+
+}
+
+int dijTopkMultiCountM(AdjList *dataAdj, list<vecNode *>&que,hash_map<int, myVector> &tempStore,myVector &myResidual,unordered_set<int> dstVec,LongHashSet TruthHash, LinkTypeNode *&mapPathCode, LinkTypeNode *&mapStructureCode, vector<myVector> &myAdd,int &iterTime, int eachMetaStrucNum, int nMaxHopNum)
+{
+	
+	updateQueRank(que, myResidual);
+	float threshold = -1.0f;
+
+	int storeType;
+	myVector tempRes = myVector::Zero(TRAINNUM);
+	threshold = checkExist(tempStore, myResidual, storeType, tempRes);
+	
 	while (!que.empty())
 	{
-		//cout << que.size << endl;
+		
+		if (que.front()->priorityScore < threshold)
+		{
+			cout << "  The " << iterTime << "-th: ";
+			printMap(mapPathCode, mapStructureCode, false, storeType);  //此处默认为false
+			myAdd[0] = tempRes;
+			tempStore.erase(storeType);
+			return 0;
+		}
+
 		unordered_map<int, vecNode*> vecStore;
 		vecNode *now = que.front();
 		que.pop_front();
@@ -303,15 +379,12 @@ int dijTopkMultiCountM(AdjList *dataAdj, list<vecNode *>&que, myVector &myResidu
 
 		myVector exactOne(TRAINNUM);
 		exactOne = myVector::Zero(TRAINNUM);
-		cout << "33333" << endl;
-		if (checkExistAimNode(now, dstVec,TruthHash,exactOne,myResidual))  //判断是否发现目标对象，只要存在至少一个就输出该meta-structure
+
+		if (checkExistAimNode(now, dstVec,TruthHash,exactOne,myResidual,tempStore,storeType,tempRes,threshold))  //判断是否发现目标对象，只要存在至少一个就输出该meta-structure
 		{
-			cout << "  The " << iterTime << "-th: ";
-			printMap(mapPathCode, mapStructureCode, now->pathORStruc, currenttype);
-			myAdd[0] = exactOne;
 			delete(now->store);
 			delete(now);
-			return 0;
+			continue ; 
 		}
 
 		if (now->nHop < nMaxHopNum)
@@ -419,6 +492,7 @@ void testTopkMulti(AdjList *dataAdj, AdjListId *typeAdj, LinkTypeNode *mapPathCo
 	float fResidual = 100.0f;
 	int iterTime = 0;
 	int returnValue;
+	hash_map<int, myVector> tempStore;
 	myMatrix myvec = myMatrix::Zero(TRAINNUM, 60);
 	
 
@@ -433,9 +507,8 @@ void testTopkMulti(AdjList *dataAdj, AdjListId *typeAdj, LinkTypeNode *mapPathCo
 		vector<myVector> myAdd(topk);
 		for (int i = 0; i < topk; i++)
 			myAdd.at(i) = myVector::Zero(TRAINNUM);
-		vector<int> tempTypeStore(2);
 
-		returnValue=dijTopkMultiCountM(dataAdj, que, myResidual,dstVec ,TruthHash, mapPathCode, mapStructureCode, myAdd,iterTime, eachMetaStrucNum, nMaxHopNum);
+		returnValue=dijTopkMultiCountM(dataAdj, que,tempStore ,myResidual,dstVec ,TruthHash, mapPathCode, mapStructureCode, myAdd,iterTime, eachMetaStrucNum, nMaxHopNum);
 	   
 		if (returnValue == 0)
 		{

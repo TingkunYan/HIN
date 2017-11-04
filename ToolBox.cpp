@@ -86,7 +86,7 @@ float getDirection(myMatrix &all, float CurrentCov, float nextCov, int nextid, m
 	return stepSize;
 }
 
-bool checkExistAimNode(vecNode *now,unordered_set<int> dstVec,LongHashSet TruthHash,myVector &exactOne,myVector &myResidual)  //检查是否发现目标节点
+bool checkExistAimNode(vecNode *now,unordered_set<int> dstVec,LongHashSet TruthHash,myVector &exactOne,myVector &myResidual, hash_map<int, myVector> &tempStore, int &storeType, myVector &tempRes,float threshold)  //检查是否发现目标节点
 {
 	storeMap::iterator niter;
 	for (niter = now->store->begin(); niter != now->store->end(); niter++)
@@ -96,23 +96,32 @@ bool checkExistAimNode(vecNode *now,unordered_set<int> dstVec,LongHashSet TruthH
 		int sourceid = comid - id * 1000;
 		float score = niter->second.score;
 		bool pos = niter->second.pos;
-		if (dstVec.find(id) != dstVec.end())
+	
+		if (TruthHash.find(comid) != TruthHash.end())
 		{
-			if (TruthHash.find(comid) != TruthHash.end())
-			{
-				exactOne[sourceid] = score;
-			}
+			exactOne[sourceid] = score;
 		}
+
 	}
 	float resExactOne = 0.0f;
 	float basenum = 0.0f;
 	for (int i = 0; i<TRAINNUM; i++)
 	{
-		resExactOne += exactOne[i] * myResidual(i);
+		if (i < TRAINNUM / 2)
+		{
+			resExactOne += exactOne[i] * myResidual(i);
+		}
 		basenum += pow(exactOne[i], 2.0);
 	}
+
 	if (resExactOne > 0)
 	{
+		tempStore[now->type] = exactOne;
+		if (resExactOne > threshold)
+		{
+			tempRes = exactOne;
+			storeType = now->type;
+		}
 		return true;
 	}
 	return false;
