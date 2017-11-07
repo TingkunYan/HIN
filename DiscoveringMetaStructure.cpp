@@ -3,7 +3,7 @@
 #include "ToolBox.h"
 #include "header.h"
 #define ALPHA 1
-#define BETA 1
+#define BETA 0.6
 ;
 hash_map<int, int> srcMap;
 unordered_map<int, float> finalScore;
@@ -329,10 +329,11 @@ float checkExist(hash_map<int, myVector> tempStore, myVector &myResidual, int &t
 		int count = 0;
 		for (int i = 0; i < TRAINNUM; i++)
 		{
-			score += myResidual(i)*iter->second(i);
+			if (i < TRAINNUM / 2)
+			{
+				score += myResidual(i)*iter->second(i);
+			}
 			base += pow(iter->second(i), 2);
-			if (iter->second(i) >0)
-				count++;
 		}
 		score = score / sqrt(base);
 		if (score > maxscore)
@@ -359,14 +360,23 @@ int dijTopkMultiCountM(AdjList *dataAdj, list<vecNode *>&que,hash_map<int, myVec
 	int storeType;
 	myVector tempRes = myVector::Zero(TRAINNUM);
 	threshold = checkExist(tempStore, myResidual, storeType, tempRes);
+
+	if (que.front()->priorityScore < threshold)
+	{
+		cout << "  The " << iterTime << "-th: ";
+		printMap(mapPathCode, mapStructureCode, false, storeType);  //此处默认为false
+		myAdd[0] = tempRes;
+		tempStore.erase(storeType);
+		return 0;
+	}
 	
 	while (!que.empty())
-	{
-		
+	{   
+		//cout << que.front()->priorityScore << "     " << threshold << endl;
 		if (que.front()->priorityScore < threshold)
 		{
 			cout << "  The " << iterTime << "-th: ";
-			printMap(mapPathCode, mapStructureCode, false, storeType);  //此处默认为false
+			printMap(mapPathCode, mapStructureCode, que.front()->pathORStruc, storeType);  //此处默认为false
 			myAdd[0] = tempRes;
 			tempStore.erase(storeType);
 			return 0;

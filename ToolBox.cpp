@@ -86,7 +86,7 @@ float getDirection(myMatrix &all, float CurrentCov, float nextCov, int nextid, m
 	return stepSize;
 }
 
-bool checkExistAimNode(vecNode *now,unordered_set<int> dstVec,LongHashSet TruthHash,myVector &exactOne,myVector &myResidual, hash_map<int, myVector> &tempStore, int &storeType, myVector &tempRes,float threshold)  //检查是否发现目标节点
+bool checkExistAimNode(vecNode *now,unordered_set<int> dstVec,LongHashSet TruthHash,myVector &exactOne,myVector &myResidual, hash_map<int, myVector> &tempStore, int &storeType, myVector &tempRes,float &threshold)  //检查是否发现目标节点
 {
 	storeMap::iterator niter;
 	for (niter = now->store->begin(); niter != now->store->end(); niter++)
@@ -113,12 +113,13 @@ bool checkExistAimNode(vecNode *now,unordered_set<int> dstVec,LongHashSet TruthH
 		}
 		basenum += pow(exactOne[i], 2.0);
 	}
-
+	float tempScore = resExactOne / sqrt(basenum);
 	if (resExactOne > 0)
 	{
 		tempStore[now->type] = exactOne;
-		if (resExactOne > threshold)
+		if (tempScore > threshold)
 		{
+			threshold = tempScore;
 			tempRes = exactOne;
 			storeType = now->type;
 		}
@@ -324,11 +325,13 @@ void insertIntoList(list<vecNode*> &que, vecNode *invec, myVector &residual)
 
 	for (int i = 0; i < TRAINNUM; i++)
 	{
-		res += invec->correct[i] * residual(i);
+		if (i < TRAINNUM / 2)
+		{
+			res += invec->correct[i] * residual(i);
+		}
 		tempres += pow(invec->correct[i], 2.0);
 	}
 	invec->priorityScore = res / sqrt(tempres);
-
 
 	if (que.size() == 0)
 	{
