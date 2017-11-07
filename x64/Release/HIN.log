@@ -3,9 +3,9 @@ DiscoveringMetaStructure.cpp(33): warning C4244: “初始化”: 从“double�
 DiscoveringMetaStructure.cpp(115): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
 DiscoveringMetaStructure.cpp(290): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
   正在生成代码
-  121 of 5826 functions ( 2.1%) were compiled, the rest were copied from previous compilation.
+  123 of 5826 functions ( 2.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    38 functions had inline decision re-evaluated but remain unchanged
+    44 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   HIN.vcxproj -> F:\Meta-structure Learning\Meta-Structure\LARS_Meta-structure\HIN\x64\Release\HIN.exe
   HIN.vcxproj -> F:\Meta-structure Learning\Meta-Structure\LARS_Meta-structure\HIN\x64\Release\HIN.pdb (Full PDB)

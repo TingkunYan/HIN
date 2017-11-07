@@ -1,6 +1,14 @@
-﻿  DiscoveringMetaStructure.cpp
+﻿  ToolBox.cpp
+f:\meta-structure learning\meta-structure\lars_meta-structure\hin\hin\toolbox.cpp(8): warning C4101: “rtype”: 未引用的局部变量
+f:\meta-structure learning\meta-structure\lars_meta-structure\hin\hin\toolbox.cpp(66): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+f:\meta-structure learning\meta-structure\lars_meta-structure\hin\hin\toolbox.cpp(89): warning C4244: “return”: 从“double”转换到“float”，可能丢失数据
+f:\meta-structure learning\meta-structure\lars_meta-structure\hin\hin\toolbox.cpp(117): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+f:\meta-structure learning\meta-structure\lars_meta-structure\hin\hin\toolbox.cpp(335): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+  DiscoveringMetaStructure.cpp
 f:\meta-structure learning\meta-structure\lars_meta-structure\hin\hin\discoveringmetastructure.cpp(33): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
 f:\meta-structure learning\meta-structure\lars_meta-structure\hin\hin\discoveringmetastructure.cpp(115): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
 f:\meta-structure learning\meta-structure\lars_meta-structure\hin\hin\discoveringmetastructure.cpp(290): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  正在生成代码...
+f:\meta-structure learning\meta-structure\lars_meta-structure\hin\hin\toolbox.cpp(28): warning C4715: “findLinkType”: 不是所有的控件路径都返回值
   HIN.vcxproj -> F:\Meta-structure Learning\Meta-Structure\LARS_Meta-structure\HIN\x64\Debug\HIN.exe
   HIN.vcxproj -> F:\Meta-structure Learning\Meta-Structure\LARS_Meta-structure\HIN\x64\Debug\HIN.pdb (Full PDB)

@@ -312,7 +312,7 @@ void updateQueRank(list<vecNode *>&que, myVector &myResidual)
 			}
 			secres += pow((*iter)->correct[i], 2);
 		}
-		(*iter)->priorityScore = res / secres;
+		(*iter)->priorityScore = res / sqrt(secres);
 	}
 	que.sort(compareVecNode);
 }
@@ -519,7 +519,6 @@ void testTopkMulti(AdjList *dataAdj, AdjListId *typeAdj, LinkTypeNode *mapPathCo
 			myAdd.at(i) = myVector::Zero(TRAINNUM);
 
 		returnValue=dijTopkMultiCountM(dataAdj, que,tempStore ,myResidual,dstVec ,TruthHash, mapPathCode, mapStructureCode, myAdd,iterTime, eachMetaStrucNum, nMaxHopNum);
-	   
 		if (returnValue == 0)
 		{
 			if (topk == 1)
@@ -536,7 +535,7 @@ void testTopkMulti(AdjList *dataAdj, AdjListId *typeAdj, LinkTypeNode *mapPathCo
 
 			curCov = (myvec.col(itertime).transpose()*myResidual);
 			nextCov = (myvec.col(itertime + 1).transpose()*myResidual);
-
+			
 			getDirection(myvec, curCov, nextCov, iterTime, myWeight, myResidual, TRAINNUM);
 			itertime++;
 			fResidual = 0;
@@ -550,8 +549,8 @@ void testTopkMulti(AdjList *dataAdj, AdjListId *typeAdj, LinkTypeNode *mapPathCo
 		{
 			cout << "Meta-path Finished!" << endl;
 		}
-		iterTime++;
 		cout << fResidual << endl;
+		iterTime++;
 	}
 }
 
