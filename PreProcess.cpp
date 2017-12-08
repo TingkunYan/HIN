@@ -6,7 +6,7 @@ map<int, string> CatName;
 map<int, string> TypeName;
 vector<int> srcData, dstData;
 
-int MAX_METAGRAPH_NUM = 20;
+int MAX_METAGRAPH_NUM = 10;
 int EACH_METAGRAPH_NUM = 3;
 int MAX_METAGRAPH_HOP = 10;
 int ENTITYNUM = 0;

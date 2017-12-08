@@ -77,11 +77,12 @@ float getDirection(myMatrix &all, float CurrentCov, float nextCov, int nextid, m
 	if (stepSize <= 0 || (LA - a(nextid + 0)<0.000001f && LA - a(nextid + 0)>-0.000001f))
 		stepSize = (CurrentCov + nextCov)*1.0f / (LA + a(nextid));
 	myVector addweight = stepSize*wA;  //更新权值
-
+	
 	for (int i = 0; i < nextid + 1; i++)
 	{
 		myweight(i) += addweight(i);   //更新权值
 	}
+	
 	myresidual = myresidual - all*myweight;  //更新残差
 	return stepSize;
 }

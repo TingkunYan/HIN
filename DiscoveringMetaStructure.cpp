@@ -3,7 +3,7 @@
 #include "ToolBox.h"
 #include "header.h"
 #define ALPHA 1
-#define BETA 0.6
+#define BETA 0.8
 ;
 hash_map<int, int> srcMap;
 unordered_map<int, float> finalScore;
@@ -30,10 +30,9 @@ unordered_map<int, vecNode*>  discoverNewBranch(vecNode *now, int currentType,Li
 
 		for (iter = dataAdj->at(id).begin(); iter != dataAdj->at(id).end(); iter++)
 		{
-			float nextvalue = score*pow(iter->value, ALPHA) * BETA;
-
+			float nextvalue = score*pow(iter->value, ALPHA) * pow(BETA,now->nHop);
 			if (nextvalue < ZERO)
-			{
+			{	
 				continue;
 			}
 			int nextid = iter->id;
@@ -57,6 +56,10 @@ unordered_map<int, vecNode*>  discoverNewBranch(vecNode *now, int currentType,Li
 				if (nodeiter != enditer)
 				{
 					nodeiter->second.score += nextvalue;
+					if (hashfind->second->correct[sourceid] < nodeiter->second.score)
+					{
+						hashfind->second->correct[sourceid] = nodeiter->second.score;
+					}
 					nodeiter->second.store.insert(nextid);
 				}
 				else
@@ -67,7 +70,7 @@ unordered_map<int, vecNode*>  discoverNewBranch(vecNode *now, int currentType,Li
 					tempNode.store.insert(nextid);
 					tempNode.pos = pos;
 					hashfind->second->store->insert(make_pair(nextid * 1000 + sourceid, tempNode));
-				}
+				}											  
 			}
 			else
 			{
@@ -112,8 +115,7 @@ unordered_map<int, vecNode*> discoverSingleBranch(vecNode *now,int singleType)  
 		{
 			if (iter->type == singleType) //只建立某一个类型的分支
 			{
-				float nextvalue = score*pow(iter->value, ALPHA) * BETA;
-
+				float nextvalue = score*pow(iter->value, ALPHA) * pow(BETA,now->nHop);
 				int nextid = iter->id;
 				if (niter->second.store.find(nextid) != niter->second.store.end())
 				{
@@ -351,7 +353,7 @@ float checkExist(hash_map<int, myVector> tempStore, myVector &myResidual, int &t
 
 }
 
-int dijTopkMultiCountM(AdjList *dataAdj, list<vecNode *>&que,hash_map<int, myVector> &tempStore,myVector &myResidual,unordered_set<int> dstVec,LongHashSet TruthHash, LinkTypeNode *&mapPathCode, LinkTypeNode *&mapStructureCode, vector<myVector> &myAdd,int &iterTime, int eachMetaStrucNum, int nMaxHopNum)
+int dijTopkMultiCountM(AdjList *dataAdj, list<vecNode *>&que,hash_map<int, myVector> &tempStore,myVector &myResidual,unordered_set<int> dstVec,LongHashSet TruthHash, LinkTypeNode *&mapPathCode, LinkTypeNode *&mapStructureCode, myVector &myAdd,int &iterTime, int eachMetaStrucNum, int nMaxHopNum)
 {
 	
 	updateQueRank(que, myResidual);
@@ -365,7 +367,7 @@ int dijTopkMultiCountM(AdjList *dataAdj, list<vecNode *>&que,hash_map<int, myVec
 	{
 		cout << "  The " << iterTime << "-th: ";
 		printMap(mapPathCode, mapStructureCode, false, storeType);  //此处默认为false
-		myAdd[0] = tempRes;
+		myAdd = tempRes;
 		tempStore.erase(storeType);
 		return 0;
 	}
@@ -377,7 +379,7 @@ int dijTopkMultiCountM(AdjList *dataAdj, list<vecNode *>&que,hash_map<int, myVec
 		{
 			cout << "  The " << iterTime << "-th: ";
 			printMap(mapPathCode, mapStructureCode, que.front()->pathORStruc, storeType);  //此处默认为false
-			myAdd[0] = tempRes;
+			myAdd= tempRes;
 			tempStore.erase(storeType);
 			return 0;
 		}
@@ -427,24 +429,24 @@ int dijTopkMultiCountM(AdjList *dataAdj, list<vecNode *>&que,hash_map<int, myVec
 				insertIntoList(que, hashiter->second,myResidual);
 			}
 
-			/*vector<vecNode*> listBranchNode;
+			vector<vecNode*> listBranchNode;
 
 			unordered_map<int, vecNode*>::iterator firstIter, secondIter;
 			int count = 0;
 
 			for (firstIter = vecStore.begin(); firstIter != vecStore.end(); firstIter++)
 			{
-			for (secondIter = firstIter, ++secondIter; secondIter != vecStore.end(); secondIter++)
-			{
-			if (firstIter->second->nStrucNum < eachMetaStrucNum && secondIter->second->nStrucNum < eachMetaStrucNum)
-			{
-			listBranchNode.push_back(firstIter->second);
-			listBranchNode.push_back(secondIter->second);
-			generateMetaStructure(que, listBranchNode, mapPathCode, mapStructureCode,myResidual,currenttype, firstIter->second->nStrucNum + 1, firstIter->second->nHop + 1);
-			listBranchNode.clear();
+				for (secondIter = firstIter, ++secondIter; secondIter != vecStore.end(); secondIter++)
+				{
+					if (firstIter->second->nStrucNum < eachMetaStrucNum && secondIter->second->nStrucNum < eachMetaStrucNum)
+					{
+						listBranchNode.push_back(firstIter->second);
+						listBranchNode.push_back(secondIter->second);
+						generateMetaStructure(que, listBranchNode, mapPathCode, mapStructureCode, myResidual, currenttype, firstIter->second->nStrucNum + 1, firstIter->second->nHop + 1);
+						listBranchNode.clear();
+					}
+				}
 			}
-			}
-			}*/
 
 		}
 		delete(now->store);
@@ -500,35 +502,31 @@ void testTopkMulti(AdjList *dataAdj, AdjListId *typeAdj, LinkTypeNode *mapPathCo
 	}
 
 	float fResidual = 100.0f;
-	int iterTime = 0;
+	int iterTime = 1;
 	int returnValue;
 	hash_map<int, myVector> tempStore;
 	myMatrix myvec = myMatrix::Zero(TRAINNUM, 60);
 	
 
-	while (fResidual>0.0001f && iterTime<iterNum)
+	while (fResidual>0.0001f && iterTime<=iterNum)
 	{
 		float curCov, nextCov;
-		int topk = 0;
-		if (iterTime == 0)
-			topk = 2;
-		else
-			topk = 1;
-		vector<myVector> myAdd(topk);
-		for (int i = 0; i < topk; i++)
-			myAdd.at(i) = myVector::Zero(TRAINNUM);
-
-		returnValue=dijTopkMultiCountM(dataAdj, que,tempStore ,myResidual,dstVec ,TruthHash, mapPathCode, mapStructureCode, myAdd,iterTime, eachMetaStrucNum, nMaxHopNum);
+		myVector myAdd= myVector::Zero(TRAINNUM);
+		returnValue = dijTopkMultiCountM(dataAdj, que, tempStore, myResidual, dstVec, TruthHash, mapPathCode, mapStructureCode, myAdd, iterTime, eachMetaStrucNum, nMaxHopNum);
+		//myAdd = (myAdd-myAdd.mean()*myVector::Ones(TRAINNUM))/myAdd.sqrt();
+		
+		cout << myAdd.mean <<"   "<<myAdd.sqrt<< endl;
+		//cout << myAdd.mean() << endl;
 		if (returnValue == 0)
 		{
-			if (topk == 1)
+			if (iterTime == 1)
 			{
-				myvec.col(itertime + 1) = myAdd.at(0);
+				myvec.col(itertime + 1) = myAdd;
 			}
 			else
 			{
 				myvec.col(itertime) = myVector::Zero(TRAINNUM);
-				myvec.col(itertime + 1) = myAdd.at(0);
+				myvec.col(itertime + 1) = myAdd;
 			}
 			float cnorm = myvec.col(itertime).norm();
 			float nnorm = myvec.col(itertime + 1).norm();
@@ -538,18 +536,18 @@ void testTopkMulti(AdjList *dataAdj, AdjListId *typeAdj, LinkTypeNode *mapPathCo
 			
 			getDirection(myvec, curCov, nextCov, iterTime, myWeight, myResidual, TRAINNUM);
 			itertime++;
-			fResidual = 0;
-
+			fResidual = 0.0f;
+			
 			for (int i = 0; i < TRAINNUM; i++)
 			{
 				fResidual += abs(myResidual(i));
 			}
+		
 		}		
-		else
+		else																	    
 		{
 			cout << "Meta-path Finished!" << endl;
 		}
-		cout << fResidual << endl;
 		iterTime++;
 	}
 }
