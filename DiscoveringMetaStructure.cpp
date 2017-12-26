@@ -440,6 +440,7 @@ int dijTopkMultiCountM(AdjList *dataAdj, list<vecNode *>&que,hash_map<int, myVec
 				{
 					if (firstIter->second->nStrucNum < eachMetaStrucNum && secondIter->second->nStrucNum < eachMetaStrucNum)
 					{
+						cout << "333" << endl;
 						listBranchNode.push_back(firstIter->second);
 						listBranchNode.push_back(secondIter->second);
 						generateMetaStructure(que, listBranchNode, mapPathCode, mapStructureCode, myResidual, currenttype, firstIter->second->nStrucNum + 1, firstIter->second->nHop + 1);
@@ -513,10 +514,9 @@ void testTopkMulti(AdjList *dataAdj, AdjListId *typeAdj, LinkTypeNode *mapPathCo
 		float curCov, nextCov;
 		myVector myAdd= myVector::Zero(TRAINNUM);
 		returnValue = dijTopkMultiCountM(dataAdj, que, tempStore, myResidual, dstVec, TruthHash, mapPathCode, mapStructureCode, myAdd, iterTime, eachMetaStrucNum, nMaxHopNum);
-		//myAdd = (myAdd-myAdd.mean()*myVector::Ones(TRAINNUM))/myAdd.sqrt();
+	
+		myAdd = myAdd / myAdd.norm();	 //单位向量
 		
-		cout << myAdd.mean <<"   "<<myAdd.sqrt<< endl;
-		//cout << myAdd.mean() << endl;
 		if (returnValue == 0)
 		{
 			if (iterTime == 1)
